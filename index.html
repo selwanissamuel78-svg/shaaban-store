@@ -1,0 +1,1798 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>شعبان للملابس الجاهزة | Shaaban Stores</title>
+  
+  <!-- Google Fonts: Cairo -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#fef2f2',
+              100: '#fee2e2',
+              500: '#ef4444',
+              600: '#dc2626',
+              700: '#b91c1c',
+              800: '#991b1b',
+              900: '#7f1d1d',
+              dark: '#5c1012'
+            },
+            gold: {
+              400: '#fbbf24',
+              500: '#f59e0b',
+              600: '#d97706'
+            }
+          },
+          fontFamily: {
+            cairo: ['Cairo', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    /* Radial burst pattern matching user's uploaded logo */
+    .logo-badge {
+      background: radial-gradient(circle at center, #c81e1e 0%, #8b1214 70%, #580a0c 100%);
+      box-shadow: 0 4px 14px rgba(185, 28, 28, 0.4);
+    }
+    
+    .logo-rays {
+      background: repeating-conic-gradient(
+        from 0deg,
+        rgba(255, 255, 255, 0.08) 0deg 10deg,
+        transparent 10deg 20deg
+      );
+    }
+
+    .badge-shimmer {
+      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0) 100%);
+      background-size: 200% 100%;
+      animation: shimmer 2.5s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased select-none pb-12">
+
+  <!-- ==================== TOP ANNOUNCEMENT BAR ==================== -->
+  <div class="bg-brand-900 text-white text-xs py-2 px-4 text-center font-bold flex items-center justify-center gap-2">
+    <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+    <span id="topAnnounceText">🚚 التوصيل متاح لجميع محافظات مصر • الدفع نقداً عند الاستلام فقط (COD) • معاينة قبل الدفع</span>
+  </div>
+
+  <!-- ==================== MAIN HEADER ==================== -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo (Recreated precisely from User's uploaded image) -->
+      <div class="flex items-center gap-3 cursor-pointer" onclick="switchRole('customer'); setCategory('الكل');">
+        <div class="logo-badge relative w-12 h-12 rounded-xl flex flex-col items-center justify-center text-white overflow-hidden p-1 border-2 border-white/20">
+          <div class="absolute inset-0 logo-rays pointer-events-none"></div>
+          <span class="font-extrabold text-xl leading-none tracking-tight drop-shadow-md">شعبان</span>
+          <span class="text-[7.5px] font-bold tracking-tighter opacity-95">للملابس الجاهزة</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <h1 class="text-xl font-black text-brand-900 leading-tight">شعبان</h1>
+            <span class="bg-brand-700 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">EGYPT</span>
+          </div>
+          <p class="text-[11px] text-slate-500 font-semibold">أرقى الملابس العصرية • الدفع عند الاستلام</p>
+        </div>
+      </div>
+
+      <!-- Center Search Bar (Desktop / Tablet) -->
+      <div class="hidden md:flex flex-1 max-w-md mx-4 relative">
+        <input 
+          type="text" 
+          id="desktopSearchInput" 
+          placeholder="ابحث عن قميص، هودي، فستان، ملابس أطفال..."
+          class="w-full bg-slate-100 border border-slate-200 rounded-full py-2 pr-10 pl-4 text-sm focus:outline-none focus:border-brand-600 focus:bg-white transition"
+          oninput="handleSearch(this.value)"
+        >
+        <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-3 text-slate-400 text-sm"></i>
+      </div>
+
+      <!-- Right Header Actions: Role Toggle & Cart -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        
+        <!-- Role Switcher (RBAC Toggle) -->
+        <div class="bg-slate-100 p-1 rounded-xl flex items-center border border-slate-200">
+          <button 
+            id="roleBtnCustomer"
+            onclick="switchRole('customer')" 
+            class="px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-brand-800 text-white shadow-sm"
+          >
+            <i class="fa-solid fa-store"></i>
+            <span>واجهة العميل</span>
+          </button>
+          <button 
+            id="roleBtnAdmin"
+            onclick="switchRole('admin')" 
+            class="px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-brand-800 transition flex items-center gap-1.5"
+          >
+            <i class="fa-solid fa-user-shield"></i>
+            <span>لوحة التحكم</span>
+          </button>
+        </div>
+
+        <!-- Cart Button (Customer View) -->
+        <button 
+          id="headerCartBtn"
+          onclick="openCartModal()" 
+          class="relative bg-brand-50 hover:bg-brand-100 text-brand-800 w-10 h-10 rounded-xl flex items-center justify-center transition border border-brand-200"
+          title="سلة المشتريات"
+        >
+          <i class="fa-solid fa-bag-shopping text-lg"></i>
+          <span 
+            id="cartBadgeCount" 
+            class="hidden absolute -top-1.5 -left-1.5 bg-brand-600 text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm"
+          >0</span>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Mobile Search Bar -->
+    <div class="md:hidden px-4 pb-3">
+      <div class="relative">
+        <input 
+          type="text" 
+          id="mobileSearchInput" 
+          placeholder="ابحث عن قميص، فستان، أطفال..."
+          class="w-full bg-slate-100 border border-slate-200 rounded-full py-2 pr-10 pl-4 text-xs focus:outline-none focus:border-brand-600 focus:bg-white"
+          oninput="handleSearch(this.value)"
+        >
+        <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-2.5 text-slate-400 text-xs"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== CUSTOMER VIEW WRAPPER ==================== -->
+  <main id="customerView" class="flex-1 max-w-7xl w-full mx-auto px-4 py-4 space-y-6">
+
+    <!-- Promotional Hero Banner (Dynamic from Admin) -->
+    <section id="promoBannerSection" class="relative rounded-2xl overflow-hidden shadow-md text-white">
+      <div class="absolute inset-0 bg-gradient-to-r from-brand-900 via-brand-800 to-rose-900 opacity-95"></div>
+      <div class="absolute inset-0 logo-rays opacity-20"></div>
+      
+      <div class="relative z-10 p-5 sm:p-7 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="space-y-3 text-center md:text-right">
+          <div class="inline-flex items-center gap-2 bg-gold-500 text-brand-950 font-black text-xs px-3 py-1 rounded-full shadow-sm">
+            <i class="fa-solid fa-gift"></i>
+            <span id="bannerDiscountTag">عرض 2+1 مجاناً</span>
+          </div>
+          <h2 id="bannerHeadline" class="text-xl sm:text-2xl md:text-3xl font-black leading-tight text-white drop-shadow">
+            عرض الموسم: اشتري قطعتين والتالتة هدية! 🎁
+          </h2>
+          <p id="bannerSubtitle" class="text-xs sm:text-sm text-slate-200 max-w-xl font-medium leading-relaxed">
+            أقوى عروض محلات شعبان للملابس الجاهزة - خامات قطن مصري فاخرة وتوصيل فوري لجميع المحافظات والدفع عند الاستلام.
+          </p>
+          <div class="flex flex-wrap items-center justify-center md:justify-start gap-3 pt-1">
+            <span class="inline-flex items-center gap-1.5 text-xs bg-black/30 backdrop-blur px-3 py-1.5 rounded-lg text-emerald-300 font-bold border border-emerald-500/30">
+              <i class="fa-solid fa-money-bill-wave"></i>
+              الدفع نقداً عند الاستلام فقط (COD)
+            </span>
+            <span class="inline-flex items-center gap-1.5 text-xs bg-black/30 backdrop-blur px-3 py-1.5 rounded-lg text-amber-200 font-bold border border-amber-500/30">
+              <i class="fa-solid fa-eye"></i>
+              معاينة المنتج قبل الدفع للمندوب
+            </span>
+          </div>
+        </div>
+
+        <!-- Call to Action Button in Banner -->
+        <button 
+          onclick="document.getElementById('productsSection').scrollIntoView({behavior: 'smooth'})"
+          class="shrink-0 bg-white hover:bg-slate-100 text-brand-900 font-black text-sm px-6 py-3.5 rounded-xl shadow-lg transition transform active:scale-95 flex items-center gap-2"
+        >
+          <span>تسوق العروض الآن</span>
+          <i class="fa-solid fa-arrow-down text-brand-700"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- Key Store Guarantees (Trust Badges) -->
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+      <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex flex-col items-center">
+        <div class="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mb-1.5 text-base">
+          <i class="fa-solid fa-hand-holding-dollar"></i>
+        </div>
+        <h4 class="text-xs font-bold text-slate-900">دفع عند الاستلام</h4>
+        <p class="text-[11px] text-slate-500">بدون أي فيزا أو دفع مسبق</p>
+      </div>
+
+      <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex flex-col items-center">
+        <div class="w-9 h-9 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mb-1.5 text-base">
+          <i class="fa-solid fa-truck-fast"></i>
+        </div>
+        <h4 class="text-xs font-bold text-slate-900">شحن سريع بمصر</h4>
+        <p class="text-[11px] text-slate-500">القاهرة والإسكندرية والمحافظات</p>
+      </div>
+
+      <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex flex-col items-center">
+        <div class="w-9 h-9 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mb-1.5 text-base">
+          <i class="fa-solid fa-certificate"></i>
+        </div>
+        <h4 class="text-xs font-bold text-slate-900">قطن مصري 100%</h4>
+        <p class="text-[11px] text-slate-500">خامات أصلية وضمان ألوان</p>
+      </div>
+
+      <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex flex-col items-center">
+        <div class="w-9 h-9 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center mb-1.5 text-base">
+          <i class="fa-solid fa-rotate-left"></i>
+        </div>
+        <h4 class="text-xs font-bold text-slate-900">معاينة واسترجاع</h4>
+        <p class="text-[11px] text-slate-500">افتح الشحنة وتأكد بنفسك</p>
+      </div>
+    </section>
+
+    <!-- Category Filters Navigation -->
+    <section id="productsSection" class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="w-2.5 h-6 bg-brand-700 rounded-full"></div>
+          <h3 class="text-lg font-black text-slate-900">تشكيلة ملابس شعبان</h3>
+        </div>
+        <span id="productCounter" class="text-xs text-slate-500 font-bold"></span>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+        <button 
+          onclick="setCategory('الكل')" 
+          class="cat-pill active px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap bg-brand-800 text-white shadow-sm"
+          data-cat="الكل"
+        >
+          <i class="fa-solid fa-border-all ml-1"></i> الكل
+        </button>
+        <button 
+          onclick="setCategory('رجالي')" 
+          class="cat-pill px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap bg-white text-slate-700 border border-slate-200 hover:border-brand-500"
+          data-cat="رجالي"
+        >
+          <i class="fa-solid fa-person ml-1"></i> رجالي (Men)
+        </button>
+        <button 
+          onclick="setCategory('حريمي')" 
+          class="cat-pill px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap bg-white text-slate-700 border border-slate-200 hover:border-brand-500"
+          data-cat="حريمي"
+        >
+          <i class="fa-solid fa-person-dress ml-1"></i> حريمي (Women)
+        </button>
+        <button 
+          onclick="setCategory('أطفالي')" 
+          class="cat-pill px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap bg-white text-slate-700 border border-slate-200 hover:border-brand-500"
+          data-cat="أطفالي"
+        >
+          <i class="fa-solid fa-child ml-1"></i> أطفالي (Kids)
+        </button>
+      </div>
+
+      <!-- Products Grid -->
+      <div id="productsGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="noProductsFound" class="hidden bg-white p-12 text-center rounded-2xl border border-slate-200 space-y-3">
+        <div class="w-16 h-16 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-2xl">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+        <h4 class="text-base font-bold text-slate-800">لم يتم العثور على أي منتجات!</h4>
+        <p class="text-xs text-slate-500">جرب البحث بكلمة أخرى أو اختر قسماً آخر من الأعلى.</p>
+        <button onclick="handleSearch(''); setCategory('الكل')" class="bg-brand-800 text-white text-xs font-bold px-4 py-2 rounded-lg">
+          عرض جميع المنتجات
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== ADMIN DASHBOARD WRAPPER ==================== -->
+  <main id="adminView" class="hidden flex-1 max-w-7xl w-full mx-auto px-4 py-4 space-y-6">
+    
+    <!-- Admin Header & KPI Cards -->
+    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-brand-700 animate-pulse"></span>
+            <h2 class="text-xl font-black text-brand-900">لوحة تحكم إدارة المتجر</h2>
+          </div>
+          <p class="text-xs text-slate-500 font-medium">متابعة الطلبات الواردة والمنتجات والعروض - الدفع عند الاستلام</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button 
+            onclick="resetToSampleData()" 
+            class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5 border border-slate-300"
+            title="استعادة منتجات شعبان الافتراضية"
+          >
+            <i class="fa-solid fa-rotate"></i>
+            <span>استعادة البيانات</span>
+          </button>
+          <button 
+            onclick="openAddProductModal()" 
+            class="text-xs bg-brand-800 hover:bg-brand-700 text-white font-bold px-4 py-2 rounded-xl transition flex items-center gap-1.5 shadow-sm"
+          >
+            <i class="fa-solid fa-plus"></i>
+            <span>إضافة منتج جديد</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Metrics -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+          <div class="flex items-center justify-between text-slate-500 mb-1">
+            <span class="text-xs font-bold">إجمالي الطلبات</span>
+            <i class="fa-solid fa-receipt text-brand-700 text-sm"></i>
+          </div>
+          <p id="kpiTotalOrders" class="text-xl font-black text-slate-900">0</p>
+        </div>
+
+        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+          <div class="flex items-center justify-between text-slate-500 mb-1">
+            <span class="text-xs font-bold">طلبات قيد التنفيذ</span>
+            <i class="fa-solid fa-clock text-amber-600 text-sm"></i>
+          </div>
+          <p id="kpiPendingOrders" class="text-xl font-black text-amber-600">0</p>
+        </div>
+
+        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+          <div class="flex items-center justify-between text-slate-500 mb-1">
+            <span class="text-xs font-bold">إجمالي المبيعات (COD)</span>
+            <i class="fa-solid fa-sack-dollar text-emerald-600 text-sm"></i>
+          </div>
+          <p id="kpiTotalRevenue" class="text-xl font-black text-emerald-600">0 ج.م</p>
+        </div>
+
+        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+          <div class="flex items-center justify-between text-slate-500 mb-1">
+            <span class="text-xs font-bold">عدد المنتجات</span>
+            <i class="fa-solid fa-shirt text-blue-600 text-sm"></i>
+          </div>
+          <p id="kpiTotalProducts" class="text-xl font-black text-blue-600">0</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Section Tabs -->
+    <div class="flex border-b border-slate-200 gap-4 text-sm font-bold">
+      <button 
+        id="adminTabBtnOrders"
+        onclick="switchAdminTab('orders')" 
+        class="pb-3 border-b-2 border-brand-800 text-brand-900 flex items-center gap-2"
+      >
+        <i class="fa-solid fa-inbox"></i>
+        <span>الطلبات الواردة (Inbox)</span>
+        <span id="adminOrdersBadge" class="bg-brand-100 text-brand-800 text-[11px] font-black px-2 py-0.5 rounded-full">0</span>
+      </button>
+
+      <button 
+        id="adminTabBtnProducts"
+        onclick="switchAdminTab('products')" 
+        class="pb-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2"
+      >
+        <i class="fa-solid fa-box-open"></i>
+        <span>إدارة المنتجات (CRUD)</span>
+      </button>
+
+      <button 
+        id="adminTabBtnOffers"
+        onclick="switchAdminTab('offers')" 
+        class="pb-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2"
+      >
+        <i class="fa-solid fa-bullhorn"></i>
+        <span>العروض والبنرات</span>
+      </button>
+    </div>
+
+    <!-- TAB 1: ORDERS INBOX -->
+    <div id="adminTabOrders" class="space-y-4">
+      <!-- Order Filter Pills -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none text-xs font-bold">
+        <button onclick="filterOrders('الكل')" class="order-filter-pill active bg-brand-800 text-white px-3 py-1.5 rounded-lg" data-filter="الكل">الكل</button>
+        <button onclick="filterOrders('قيد التنفيذ')" class="order-filter-pill bg-white text-slate-700 border border-slate-200 px-3 py-1.5 rounded-lg" data-filter="قيد التنفيذ">قيد التنفيذ</button>
+        <button onclick="filterOrders('تم التأكيد')" class="order-filter-pill bg-white text-slate-700 border border-slate-200 px-3 py-1.5 rounded-lg" data-filter="تم التأكيد">تم التأكيد</button>
+        <button onclick="filterOrders('تم الشحن')" class="order-filter-pill bg-white text-slate-700 border border-slate-200 px-3 py-1.5 rounded-lg" data-filter="تم الشحن">تم الشحن</button>
+        <button onclick="filterOrders('تم التوصيل')" class="order-filter-pill bg-white text-slate-700 border border-slate-200 px-3 py-1.5 rounded-lg" data-filter="تم التوصيل">تم التوصيل</button>
+      </div>
+
+      <!-- Orders List Container -->
+      <div id="adminOrdersContainer" class="space-y-3">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+
+    <!-- TAB 2: PRODUCTS CRUD -->
+    <div id="adminTabProducts" class="hidden space-y-4">
+      <div id="adminProductsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+
+    <!-- TAB 3: OFFERS MANAGEMENT -->
+    <div id="adminTabOffers" class="hidden bg-white p-5 rounded-2xl border border-slate-200 space-y-5">
+      <div>
+        <h3 class="text-base font-black text-brand-900">تعديل البنر الإعلاني والعروض الرئيسية</h3>
+        <p class="text-xs text-slate-500">التعديلات تنعكس فوراً وتظهر في الواجهة الرئيسية لكل العملاء</p>
+      </div>
+
+      <!-- Preset Offer Templates -->
+      <div class="space-y-2">
+        <label class="text-xs font-bold text-slate-700">نماذج عروض جاهزة (اضغط للتطبيق):</label>
+        <div class="flex flex-wrap gap-2 text-xs font-bold">
+          <button 
+            type="button"
+            onclick="applyOfferPreset('عرض 2+1 مجاناً', 'عرض الموسم: اشتري قطعتين والتالتة هدية! 🎁', 'أقوى عروض محلات شعبان للملابس الجاهزة - خامات قطن مصري فاخرة وتوصيل فوري لجميع المحافظات والدفع عند الاستلام.')"
+            class="bg-rose-50 text-rose-800 hover:bg-rose-100 px-3 py-1.5 rounded-lg border border-rose-200"
+          >
+            🔥 عرض اشتري قطعتين والتالتة هدية
+          </button>
+          <button 
+            type="button"
+            onclick="applyOfferPreset('خصومات حتى 50%', 'أوكازيون الصيف الكبير: وفر نصف الثمن على تشكيلات الأزياء!', 'تخفيضات كبرى على القمصان والفساتين وملابس الأطفال بجميع الفروع - معاينة مجانية قبل الدفع.')"
+            class="bg-amber-50 text-amber-800 hover:bg-amber-100 px-3 py-1.5 rounded-lg border border-amber-200"
+          >
+            🏷️ خصم 50% أوكازيون الموسم
+          </button>
+          <button 
+            type="button"
+            onclick="applyOfferPreset('تشكيلة العيد ✨', 'تشكيلة الأعياد الجديدة وصلت الآن فروعنا وموقعنا!', 'أرقى الموديلات الرجالي والحريمي والأطفالي - اطلب الآن وادفع نقداً عند استلام شحنتك.')"
+            class="bg-blue-50 text-blue-800 hover:bg-blue-100 px-3 py-1.5 rounded-lg border border-blue-200"
+          >
+            🎉 تشكيلة الأعياد الحصرية
+          </button>
+        </div>
+      </div>
+
+      <form id="offerForm" onsubmit="handleSaveOffer(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">شارة العرض (Tag Badge):</label>
+          <input 
+            type="text" 
+            id="offerTagInput" 
+            required 
+            placeholder="مثال: عرض 2+1 مجاناً" 
+            class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-brand-700"
+          >
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">العنوان الرئيسي للعرض:</label>
+          <input 
+            type="text" 
+            id="offerHeadlineInput" 
+            required 
+            placeholder="مثال: عرض الموسم: اشتري قطعتين والتالتة هدية! 🎁" 
+            class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-brand-700"
+          >
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">الوصف ومزايا الشحن:</label>
+          <textarea 
+            id="offerSubtitleInput" 
+            rows="3" 
+            required 
+            placeholder="تفاصيل العرض ومناطق التوصيل والدفع عند الاستلام..." 
+            class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-brand-700"
+          ></textarea>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <input type="checkbox" id="offerActiveCheckbox" checked class="w-4 h-4 text-brand-700 rounded">
+          <label for="offerActiveCheckbox" class="text-xs font-bold text-slate-800">تفعيل البنر في الواجهة الرئيسية للعميل</label>
+        </div>
+
+        <button 
+          type="submit" 
+          class="bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold px-6 py-2.5 rounded-xl shadow transition"
+        >
+          حفظ وتطبيق العرض فوراً
+        </button>
+      </form>
+    </div>
+
+  </main>
+
+  <!-- ==================== PRODUCT QUICK VIEW MODAL ==================== -->
+  <div id="productDetailModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
+      <div class="relative h-64 bg-slate-100">
+        <img id="modalProductImg" src="" alt="" class="w-full h-full object-cover">
+        <button 
+          onclick="closeProductDetailModal()" 
+          class="absolute top-3 left-3 bg-black/50 hover:bg-black/70 text-white w-8 h-8 rounded-full flex items-center justify-center transition"
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <span id="modalProductBadge" class="absolute bottom-3 right-3 bg-brand-700 text-white text-xs font-bold px-2.5 py-1 rounded-lg"></span>
+      </div>
+
+      <div class="p-5 space-y-4">
+        <div>
+          <div class="flex items-center justify-between">
+            <span id="modalProductCategory" class="text-xs font-bold text-brand-700 bg-brand-50 px-2 py-0.5 rounded"></span>
+            <div class="flex items-center gap-1 text-gold-500 text-xs font-bold">
+              <i class="fa-solid fa-star"></i>
+              <span id="modalProductRating">4.9</span>
+            </div>
+          </div>
+          <h3 id="modalProductName" class="text-lg font-black text-slate-900 mt-1"></h3>
+        </div>
+
+        <div class="flex items-baseline gap-2">
+          <span id="modalProductPrice" class="text-2xl font-black text-brand-900"></span>
+          <span class="text-xs font-bold text-brand-700">ج.م</span>
+          <span id="modalProductOrigPrice" class="text-xs text-slate-400 line-through"></span>
+        </div>
+
+        <p id="modalProductDesc" class="text-xs text-slate-600 leading-relaxed"></p>
+
+        <!-- Size Selection -->
+        <div class="space-y-1.5">
+          <label class="text-xs font-bold text-slate-800">اختر المقاس:</label>
+          <div id="modalSizeButtons" class="flex items-center gap-2">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+        <!-- COD Notice Banner inside details -->
+        <div class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl flex items-center gap-2 text-emerald-800 text-xs font-semibold">
+          <i class="fa-solid fa-money-bill-wave text-emerald-600 text-sm"></i>
+          <span>الدفع نقداً عند استلام ومعاينة المنتج من مندوب شعبان.</span>
+        </div>
+
+        <!-- Action Button -->
+        <button 
+          id="modalAddToCartBtn"
+          onclick="addCurrentModalToCart()" 
+          class="w-full bg-brand-800 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 shadow"
+        >
+          <i class="fa-solid fa-cart-plus"></i>
+          <span>أضف للسلة الآن</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== CART DRAWER / MODAL ==================== -->
+  <div id="cartModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-end">
+    <div class="bg-white w-full max-w-md h-full flex flex-col shadow-2xl animate-in slide-in-from-left duration-200">
+      
+      <!-- Cart Header -->
+      <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-bag-shopping text-brand-800 text-lg"></i>
+          <h3 class="text-base font-black text-slate-900">سلة المشتريات</h3>
+          <span id="cartDrawerCount" class="text-xs bg-brand-100 text-brand-800 font-bold px-2 py-0.5 rounded-full">0</span>
+        </div>
+        <button onclick="closeCartModal()" class="text-slate-400 hover:text-slate-700 w-8 h-8 rounded-full flex items-center justify-center">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Cart Items List -->
+      <div id="cartItemsList" class="flex-1 overflow-y-auto p-4 space-y-3">
+        <!-- Injected via JS -->
+      </div>
+
+      <!-- Empty Cart Message -->
+      <div id="cartEmptyState" class="hidden flex-1 flex flex-col items-center justify-center p-6 text-center space-y-3">
+        <div class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-2xl">
+          <i class="fa-solid fa-cart-shopping"></i>
+        </div>
+        <h4 class="text-base font-bold text-slate-800">سلتك فارغة حالياً</h4>
+        <p class="text-xs text-slate-500">اختر من تشكيلات شعبان واستمتع بأقوى العروض!</p>
+        <button onclick="closeCartModal()" class="bg-brand-800 text-white text-xs font-bold px-5 py-2.5 rounded-xl">
+          تصفح المتجر
+        </button>
+      </div>
+
+      <!-- Cart Footer & Checkout Action -->
+      <div id="cartFooter" class="p-4 border-t border-slate-200 bg-slate-50 space-y-3">
+        <div class="space-y-1.5 text-xs text-slate-600">
+          <div class="flex justify-between">
+            <span>إجمالي المنتجات:</span>
+            <span id="cartSubtotal" class="font-bold text-slate-900">0 ج.م</span>
+          </div>
+          <div class="flex justify-between">
+            <span>مصاريف الشحن:</span>
+            <span class="font-bold text-emerald-600">مجاناً (عرض محلات شعبان)</span>
+          </div>
+          <div class="flex justify-between text-sm font-black text-brand-900 pt-1 border-t border-slate-200">
+            <span>المبلغ الإجمالي عند الاستلام:</span>
+            <span id="cartTotal" class="text-base font-black text-brand-700">0 ج.م</span>
+          </div>
+        </div>
+
+        <div class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl flex items-center gap-2 text-emerald-800 text-xs font-bold">
+          <i class="fa-solid fa-money-bill-wave text-emerald-600"></i>
+          <span>الدفع نقداً عند الاستلام فقط (COD)</span>
+        </div>
+
+        <button 
+          onclick="openCheckoutModal()" 
+          class="w-full bg-brand-800 hover:bg-brand-700 text-white text-sm font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 shadow"
+        >
+          <span>متابعة الشراء والدفع عند الاستلام</span>
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== CHECKOUT FORM MODAL (COD ONLY) ==================== -->
+  <div id="checkoutModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl max-h-[92vh] flex flex-col">
+      
+      <!-- Checkout Header -->
+      <div class="p-4 bg-brand-900 text-white flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center text-sm">
+            <i class="fa-solid fa-money-bill-wave"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-black">إتمام الطلب - الدفع عند الاستلام فقط</h3>
+            <p class="text-[11px] text-slate-300">محلات شعبان • Cash On Delivery</p>
+          </div>
+        </div>
+        <button onclick="closeCheckoutModal()" class="text-slate-300 hover:text-white">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Checkout Form -->
+      <form id="checkoutForm" onsubmit="handlePlaceOrder(event)" class="p-5 overflow-y-auto space-y-4">
+        
+        <!-- COD Banner Reminder -->
+        <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl text-blue-900 text-xs font-semibold flex items-center gap-2.5">
+          <i class="fa-solid fa-circle-info text-blue-600 text-base"></i>
+          <span>لا يوجد دفع إلكتروني أو بطاقات بنكية. سيقوم المندوب بتوصيل طلبك وتحصيل المبلغ نقداً بعد المعاينة.</span>
+        </div>
+
+        <!-- Full Name -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">الاسم بالكامل:</label>
+          <input 
+            type="text" 
+            id="checkoutName" 
+            required 
+            placeholder="مثال: أحمد محمد علي" 
+            class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-brand-700"
+          >
+        </div>
+
+        <!-- Phone Number -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">رقم الموبايل / واتساب للتأكيد:</label>
+          <input 
+            type="tel" 
+            id="checkoutPhone" 
+            required 
+            placeholder="010xxxxxxxx أو 011 / 012 / 015" 
+            class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-brand-700"
+          >
+        </div>
+
+        <!-- Governorate -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">المحافظة:</label>
+          <select 
+            id="checkoutCity" 
+            class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-brand-700 bg-white"
+          >
+            <option value="القاهرة">القاهرة (Cairo)</option>
+            <option value="الجيزة">الجيزة (Giza)</option>
+            <option value="الإسكندرية">الإسكندرية (Alexandria)</option>
+            <option value="الدقهلية - المنصورة">الدقهلية - المنصورة</option>
+            <option value="الغربية - طنطا">الغربية - طنطا</option>
+            <option value="الشرقية - الزقازيق">الشرقية - الزقازيق</option>
+            <option value="القليوبية">القليوبية</option>
+            <option value="المنوفية">المنوفية</option>
+            <option value="البحيرة">البحيرة</option>
+            <option value="كفر الشيخ">كفر الشيخ</option>
+            <option value="دمياط">دمياط</option>
+            <option value="بورسعيد">بورسعيد</option>
+            <option value="الإسماعيلية">الإسماعيلية</option>
+            <option value="السويس">السويس</option>
+            <option value="الفيوم">الفيوم</option>
+            <option value="بني سويف">بني سويف</option>
+            <option value="المنيا">المنيا</option>
+            <option value="أسيوط">أسيوط</option>
+            <option value="سوهاج">سوهاج</option>
+            <option value="قنا">قنا</option>
+            <option value="الأقصر">الأقصر</option>
+            <option value="أسوان">أسوان</option>
+          </select>
+        </div>
+
+        <!-- Detailed Address -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">العنوان بالتفصيل:</label>
+          <input 
+            type="text" 
+            id="checkoutAddress" 
+            required 
+            placeholder="المنطقة، الشارع، رقم العمارة والشقة" 
+            class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-brand-700"
+          >
+        </div>
+
+        <!-- Notes -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">ملاحظات التوصيل (اختياري):</label>
+          <input 
+            type="text" 
+            id="checkoutNotes" 
+            placeholder="أقرب علامة مميزة أو وقت مفضل للاتصال" 
+            class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-brand-700"
+          >
+        </div>
+
+        <!-- Order Total Preview -->
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex items-center justify-between text-xs font-bold">
+          <span class="text-slate-700">المبلغ المطلوب عند الاستلام:</span>
+          <span id="checkoutOrderTotal" class="text-sm font-black text-brand-700">0 ج.م</span>
+        </div>
+
+        <!-- Submit Button -->
+        <button 
+          type="submit" 
+          class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3 rounded-xl shadow transition text-xs flex items-center justify-center gap-2"
+        >
+          <i class="fa-solid fa-check"></i>
+          <span>تأكيد الطلب الآن (دفع عند الاستلام)</span>
+        </button>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ==================== ORDER SUCCESS CONFIRMATION ==================== -->
+  <div id="orderSuccessModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 text-center space-y-4 shadow-2xl">
+      <div class="w-16 h-16 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-3xl">
+        <i class="fa-solid fa-check"></i>
+      </div>
+      <div>
+        <h3 class="text-xl font-black text-slate-900">تم تسجيل طلبك بنجاح! 🎉</h3>
+        <p class="text-xs text-slate-500 mt-1">شكراً لثقتك في محلات شعبان للملابس الجاهزة</p>
+      </div>
+
+      <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs text-slate-700 space-y-1.5 text-right font-medium">
+        <div class="flex justify-between">
+          <span class="text-slate-500">رقم الطلب:</span>
+          <span id="successOrderCode" class="font-bold text-brand-800"></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-500">اسم العميل:</span>
+          <span id="successCustomerName" class="font-bold"></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-500">المبلغ عند الاستلام:</span>
+          <span id="successOrderTotal" class="font-black text-emerald-700"></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-500">طريقة السداد:</span>
+          <span class="font-bold text-emerald-700">الدفع عند الاستلام (COD)</span>
+        </div>
+      </div>
+
+      <p class="text-[11px] text-amber-700 bg-amber-50 p-2.5 rounded-xl border border-amber-200 font-semibold leading-relaxed">
+        📞 سيقوم فريق خدمة العملاء بالاتصال بك هاتفياً لتأكيد المقاسات وموعد الشحن والتوصيل لحد باب البيت.
+      </p>
+
+      <button 
+        onclick="closeOrderSuccessModal()" 
+        class="w-full bg-brand-800 text-white font-bold py-2.5 rounded-xl text-xs"
+      >
+        متابعة التسوق في المتجر
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== ADMIN ADD/EDIT PRODUCT MODAL ==================== -->
+  <div id="productEditModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl max-h-[92vh] flex flex-col">
+      <div class="p-4 bg-brand-900 text-white flex items-center justify-between">
+        <h3 id="productEditModalTitle" class="text-sm font-black">إضافة منتج جديد</h3>
+        <button onclick="closeProductEditModal()" class="text-slate-300 hover:text-white">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <form id="productEditForm" onsubmit="handleSaveProduct(event)" class="p-5 overflow-y-auto space-y-3">
+        <input type="hidden" id="editProductId">
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">اسم المنتج:</label>
+          <input type="text" id="editProductName" required placeholder="مثال: قميص أكسفورد قطن كاجوال" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-brand-700">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">القسم:</label>
+            <select id="editProductCategory" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-brand-700 bg-white">
+              <option value="رجالي">رجالي (Men)</option>
+              <option value="حريمي">حريمي (Women)</option>
+              <option value="أطفالي">أطفالي (Kids)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">شارة المنتج (Badge):</label>
+            <input type="text" id="editProductBadge" placeholder="الأكثر مبيعاً 🔥 أو عرض خاص" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-brand-700">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">السعر الحالي (ج.م):</label>
+            <input type="number" id="editProductPrice" required step="1" placeholder="380" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-brand-700">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">السعر قبل الخصم (اختياري):</label>
+            <input type="number" id="editProductOrigPrice" step="1" placeholder="490" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-brand-700">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">رابط الصورة (Image URL):</label>
+          <input type="url" id="editProductImage" required placeholder="https://..." class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-brand-700">
+          
+          <!-- Quick Image Presets -->
+          <div class="mt-2 space-y-1">
+            <span class="text-[10px] text-slate-500 font-bold">اختيار سريع لصورة تجريبية:</span>
+            <div class="flex flex-wrap gap-1 text-[10px] font-bold">
+              <button type="button" onclick="setPresetImg('https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=600&q=80')" class="bg-slate-100 hover:bg-slate-200 px-2 py-0.5 rounded text-slate-700">قميص رجالي</button>
+              <button type="button" onclick="setPresetImg('https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=600&q=80')" class="bg-slate-100 hover:bg-slate-200 px-2 py-0.5 rounded text-slate-700">فستان صيفي</button>
+              <button type="button" onclick="setPresetImg('https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?auto=format&fit=crop&w=600&q=80')" class="bg-slate-100 hover:bg-slate-200 px-2 py-0.5 rounded text-slate-700">طقم أطفال</button>
+              <button type="button" onclick="setPresetImg('https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=600&q=80')" class="bg-slate-100 hover:bg-slate-200 px-2 py-0.5 rounded text-slate-700">هودي كاجوال</button>
+              <button type="button" onclick="setPresetImg('https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?auto=format&fit=crop&w=600&q=80')" class="bg-slate-100 hover:bg-slate-200 px-2 py-0.5 rounded text-slate-700">عباية استقبال</button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">وصف المنتج والخامة:</label>
+          <textarea id="editProductDesc" rows="3" required placeholder="قطن مصري 100% ممتاز ومريح..." class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-brand-700"></textarea>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <input type="checkbox" id="editProductInStock" checked class="w-4 h-4 text-brand-700 rounded">
+          <label for="editProductInStock" class="text-xs font-bold text-slate-800">متوفر بالمخزن وجاهز للشحن الفوري</label>
+        </div>
+
+        <button type="submit" class="w-full bg-brand-800 hover:bg-brand-700 text-white font-bold py-2.5 rounded-xl text-xs transition">
+          حفظ المنتج
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== TOAST NOTIFICATION CONTAINER ==================== -->
+  <div id="toastContainer" class="fixed bottom-4 left-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+  <script>
+    // Initial Seed Data (Authentic Shaaban Stores Egyptian Clothing)
+    const DEFAULT_PRODUCTS = [
+      {
+        id: 1,
+        name: "قميص كاجوال قطن مصري فاخر",
+        category: "رجالي",
+        price: 380,
+        originalPrice: 490,
+        imageUrl: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=600&q=80",
+        description: "قميص رجالي عصري مصنوع من خامة القطن المصري 100% عالية النعومة والتهوية، مناسب لجميع المناسبات والعمل اليومي.",
+        inStock: true,
+        badge: "الأكثر مبيعاً 🔥",
+        rating: 4.9
+      },
+      {
+        id: 2,
+        name: "فستان صيفي فلورال أنيق",
+        category: "حريمي",
+        price: 550,
+        originalPrice: 720,
+        imageUrl: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=600&q=80",
+        description: "فستان حريمي بنقوش زهرية رقيقة وقصة مريحة تناسب الصيف والخروجات العصرية، خامة باردة ومقاومة للتجعد.",
+        inStock: true,
+        badge: "عرض خاص 🌟",
+        rating: 4.8
+      },
+      {
+        id: 3,
+        name: "طقم ولادي كاجوال شورت وتيشرت",
+        category: "أطفالي",
+        price: 290,
+        originalPrice: 370,
+        imageUrl: "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?auto=format&fit=crop&w=600&q=80",
+        description: "طقم أطفال صيفي مبهج من تيشرت قطني وشورت جينز مطاطي مريح للحركة ولعب الأطفال طوال اليوم.",
+        inStock: true,
+        badge: "قطن 100% 👶",
+        rating: 4.9
+      },
+      {
+        id: 4,
+        name: "هودي أوفر سايز شبابي شتوي",
+        category: "رجالي",
+        price: 450,
+        originalPrice: 600,
+        imageUrl: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=600&q=80",
+        description: "سويت شيرت هودي ثقيل مبطن بوبرة دافئة وقصة أوفر سايز عصرية على أحدث صيحات الموضة الشبابية في مصر.",
+        inStock: true,
+        badge: "وصل حديثاً ✨",
+        rating: 4.7
+      },
+      {
+        id: 5,
+        name: "عباية كاجوال عصرية بأكمام مطرزة",
+        category: "حريمي",
+        price: 680,
+        originalPrice: 850,
+        imageUrl: "https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?auto=format&fit=crop&w=600&q=80",
+        description: "عباية استقبال وكاجوال محتشمة وأنيقة، خامة كريب كوري ملكي بتطريز ناعم على الأساور والياقة.",
+        inStock: true,
+        badge: "تصميم ملكي 👑",
+        rating: 4.9
+      },
+      {
+        id: 6,
+        name: "فستان بناتي ربيعي تول وأورجانزا",
+        category: "أطفالي",
+        price: 340,
+        originalPrice: 420,
+        imageUrl: "https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?auto=format&fit=crop&w=600&q=80",
+        description: "فستان أميرات للبنات مناسب للأعياد وحفلات أعياد الميلاد مع بطانة قطنية لطيفة على بشرة الأطفال الحساسة.",
+        inStock: true,
+        badge: "مفضل للأعياد 🎉",
+        rating: 4.8
+      },
+      {
+        id: 7,
+        name: "بنطلون جينز رجالي كلاسيك مستقيم",
+        category: "رجالي",
+        price: 420,
+        originalPrice: 520,
+        imageUrl: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=600&q=80",
+        description: "جينز متين مع نسبة ليكرا مريحة للجلوس والحركة طوال اليوم، غسيل كحلي فاخر وثبات ألوان مضمون.",
+        inStock: true,
+        badge: "خامة أصلية 👖",
+        rating: 4.7
+      },
+      {
+        id: 8,
+        name: "بلوزة شيفون حريمي حريرية راقية",
+        category: "حريمي",
+        price: 360,
+        originalPrice: 460,
+        imageUrl: "https://images.unsplash.com/photo-1604014237800-1c9102c219da?auto=format&fit=crop&w=600&q=80",
+        description: "بلوزة ناعمة ورقيقة تصلح للإطلالات الرسمية والجامعية، ألوان جذابة وأزرار صدفية مميزة.",
+        inStock: true,
+        badge: "تخفيض 25% 🏷️",
+        rating: 4.6
+      },
+      {
+        id: 9,
+        name: "ترنج رياضي بناتي قطن مخلوط",
+        category: "أطفالي",
+        price: 320,
+        originalPrice: 400,
+        imageUrl: "https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&w=600&q=80",
+        description: "ترنج قطعتين عملي ومريح للتمارين الرياضية والخروج اليومي، ألوان زاهية لا تتغير بالغسيل المتكرر.",
+        inStock: true,
+        badge: "مريح وعملي 🏃‍♀️",
+        rating: 4.8
+      }
+    ];
+
+    const DEFAULT_OFFER = {
+      headline: "عرض الموسم: اشتري قطعتين والتالتة هدية! 🎁",
+      subtitle: "أقوى عروض محلات شعبان للملابس الجاهزة - خامات قطن مصري فاخرة وتوصيل فوري لجميع المحافظات والدفع عند الاستلام.",
+      discountTag: "عرض 2+1 مجاناً",
+      isActive: true
+    };
+
+    // State Variables
+    let products = JSON.parse(localStorage.getItem('shaaban_products')) || DEFAULT_PRODUCTS;
+    let orders = JSON.parse(localStorage.getItem('shaaban_orders')) || [];
+    let offer = JSON.parse(localStorage.getItem('shaaban_offer')) || DEFAULT_OFFER;
+    let cart = JSON.parse(localStorage.getItem('shaaban_cart')) || [];
+
+    let currentRole = 'customer'; // 'customer' or 'admin'
+    let currentCategory = 'الكل';
+    let searchQuery = '';
+    let selectedOrderFilter = 'الكل';
+
+    let currentModalProduct = null;
+    let currentSelectedSize = 'L';
+
+    // Initialize App
+    document.addEventListener('DOMContentLoaded', () => {
+      syncLocalStorage();
+      renderOfferBanner();
+      renderProducts();
+      updateCartUI();
+      renderAdminDashboard();
+    });
+
+    function syncLocalStorage() {
+      localStorage.setItem('shaaban_products', JSON.stringify(products));
+      localStorage.setItem('shaaban_orders', JSON.stringify(orders));
+      localStorage.setItem('shaaban_offer', JSON.stringify(offer));
+      localStorage.setItem('shaaban_cart', JSON.stringify(cart));
+    }
+
+    // Role Switching
+    function switchRole(role) {
+      currentRole = role;
+      const custView = document.getElementById('customerView');
+      const admView = document.getElementById('adminView');
+      const btnCust = document.getElementById('roleBtnCustomer');
+      const btnAdm = document.getElementById('roleBtnAdmin');
+      const cartBtn = document.getElementById('headerCartBtn');
+
+      if (role === 'customer') {
+        custView.classList.remove('hidden');
+        admView.classList.add('hidden');
+        btnCust.className = "px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-brand-800 text-white shadow-sm";
+        btnAdm.className = "px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-brand-800 transition flex items-center gap-1.5";
+        cartBtn.classList.remove('hidden');
+        renderProducts();
+      } else {
+        custView.classList.add('hidden');
+        admView.classList.remove('hidden');
+        btnAdm.className = "px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-brand-800 text-white shadow-sm";
+        btnCust.className = "px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-brand-800 transition flex items-center gap-1.5";
+        cartBtn.classList.add('hidden');
+        renderAdminDashboard();
+      }
+    }
+
+    // Render Promotional Banner
+    function renderOfferBanner() {
+      const banner = document.getElementById('promoBannerSection');
+      if (!offer.isActive) {
+        banner.classList.add('hidden');
+        return;
+      }
+      banner.classList.remove('hidden');
+      document.getElementById('bannerDiscountTag').textContent = offer.discountTag;
+      document.getElementById('bannerHeadline').textContent = offer.headline;
+      document.getElementById('bannerSubtitle').textContent = offer.subtitle;
+
+      // Also set form values in Admin Tab
+      document.getElementById('offerTagInput').value = offer.discountTag;
+      document.getElementById('offerHeadlineInput').value = offer.headline;
+      document.getElementById('offerSubtitleInput').value = offer.subtitle;
+      document.getElementById('offerActiveCheckbox').checked = offer.isActive;
+    }
+
+    // Products Rendering & Filtering
+    function setCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.cat-pill').forEach(btn => {
+        if (btn.dataset.cat === cat) {
+          btn.className = "cat-pill active px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap bg-brand-800 text-white shadow-sm";
+        } else {
+          btn.className = "cat-pill px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap bg-white text-slate-700 border border-slate-200 hover:border-brand-500";
+        }
+      });
+      renderProducts();
+    }
+
+    function handleSearch(val) {
+      searchQuery = val.trim().toLowerCase();
+      document.getElementById('desktopSearchInput').value = val;
+      document.getElementById('mobileSearchInput').value = val;
+      renderProducts();
+    }
+
+    function renderProducts() {
+      const grid = document.getElementById('productsGrid');
+      const empty = document.getElementById('noProductsFound');
+      const counter = document.getElementById('productCounter');
+
+      const filtered = products.filter(p => {
+        const matchesCategory = currentCategory === 'الكل' || p.category.includes(currentCategory);
+        const matchesSearch = !searchQuery || 
+          p.name.toLowerCase().includes(searchQuery) ||
+          p.description.toLowerCase().includes(searchQuery) ||
+          p.category.toLowerCase().includes(searchQuery) ||
+          (p.badge && p.badge.toLowerCase().includes(searchQuery));
+        return matchesCategory && matchesSearch;
+      });
+
+      counter.textContent = `${filtered.length} موديل متوفر`;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        empty.classList.remove('hidden');
+        return;
+      }
+
+      empty.classList.add('hidden');
+      grid.innerHTML = filtered.map(p => {
+        const hasDiscount = p.originalPrice && p.originalPrice > p.price;
+        return `
+          <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col group">
+            <div class="relative aspect-square overflow-hidden bg-slate-100 cursor-pointer" onclick="openProductDetailModal(${p.id})">
+              <img 
+                src="${p.imageUrl}" 
+                alt="${p.name}" 
+                class="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                loading="lazy"
+              >
+              ${p.badge ? `
+                <span class="absolute top-2 right-2 bg-brand-700 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow">
+                  ${p.badge}
+                </span>
+              ` : ''}
+              <span class="absolute top-2 left-2 bg-black/60 text-white text-[10px] font-medium px-2 py-0.5 rounded backdrop-blur-sm">
+                ${p.category}
+              </span>
+              ${p.inStock ? `
+                <span class="absolute bottom-2 right-2 bg-emerald-600/90 text-white text-[9px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1 backdrop-blur-sm">
+                  <i class="fa-solid fa-circle-check text-[8px]"></i> متوفر بالمخزن
+                </span>
+              ` : ''}
+            </div>
+
+            <div class="p-3 flex-1 flex flex-col justify-between space-y-2">
+              <div>
+                <h4 class="text-xs font-bold text-slate-900 line-clamp-1 cursor-pointer hover:text-brand-800" onclick="openProductDetailModal(${p.id})">
+                  ${p.name}
+                </h4>
+                <div class="flex items-center gap-1 text-[11px] text-slate-500 mt-0.5">
+                  <i class="fa-solid fa-star text-gold-500 text-[10px]"></i>
+                  <span class="font-bold text-slate-700">${p.rating || 4.8}</span>
+                  <span class="text-slate-400">• دفع عند الاستلام</span>
+                </div>
+              </div>
+
+              <div class="pt-1 flex items-baseline justify-between border-t border-slate-100">
+                <div>
+                  <div class="flex items-baseline gap-1">
+                    <span class="text-base font-black text-brand-900">${p.price}</span>
+                    <span class="text-[10px] font-bold text-brand-700">ج.م</span>
+                  </div>
+                  ${hasDiscount ? `
+                    <span class="text-[10px] text-slate-400 line-through">${p.originalPrice} ج.م</span>
+                  ` : ''}
+                </div>
+                <button 
+                  onclick="quickAddToCart(${p.id})" 
+                  class="bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 transition shadow-sm active:scale-95"
+                  title="أضف إلى السلة"
+                >
+                  <i class="fa-solid fa-plus text-[10px]"></i>
+                  <span>أضف</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Product Detail Modal
+    function openProductDetailModal(id) {
+      const product = products.find(p => p.id === id);
+      if (!product) return;
+      currentModalProduct = product;
+      
+      document.getElementById('modalProductImg').src = product.imageUrl;
+      document.getElementById('modalProductBadge').textContent = product.badge || 'شعبان للملابس';
+      document.getElementById('modalProductCategory').textContent = product.category;
+      document.getElementById('modalProductRating').textContent = product.rating || '4.9';
+      document.getElementById('modalProductName').textContent = product.name;
+      document.getElementById('modalProductPrice').textContent = product.price;
+      document.getElementById('modalProductDesc').textContent = product.description;
+
+      const origEl = document.getElementById('modalProductOrigPrice');
+      if (product.originalPrice && product.originalPrice > product.price) {
+        origEl.textContent = `${product.originalPrice} ج.م`;
+      } else {
+        origEl.textContent = '';
+      }
+
+      // Sizes buttons
+      const isKids = product.category.includes('أطفالي');
+      const sizes = isKids ? ['4 سنين', '6 سنين', '8 سنين', '10 سنين', '12 سنة'] : ['M', 'L', 'XL', '2XL', '3XL'];
+      currentSelectedSize = sizes[1] || sizes[0];
+
+      const sizeContainer = document.getElementById('modalSizeButtons');
+      sizeContainer.innerHTML = sizes.map(s => `
+        <button 
+          type="button" 
+          onclick="selectSize('${s}')" 
+          class="size-btn px-3 py-1.5 rounded-lg text-xs font-bold transition border ${s === currentSelectedSize ? 'bg-brand-800 text-white border-brand-800' : 'bg-slate-50 text-slate-700 border-slate-200'}"
+          data-size="${s}"
+        >
+          ${s}
+        </button>
+      `).join('');
+
+      document.getElementById('productDetailModal').classList.remove('hidden');
+    }
+
+    function selectSize(size) {
+      currentSelectedSize = size;
+      document.querySelectorAll('.size-btn').forEach(btn => {
+        if (btn.dataset.size === size) {
+          btn.className = "size-btn px-3 py-1.5 rounded-lg text-xs font-bold transition border bg-brand-800 text-white border-brand-800";
+        } else {
+          btn.className = "size-btn px-3 py-1.5 rounded-lg text-xs font-bold transition border bg-slate-50 text-slate-700 border-slate-200";
+        }
+      });
+    }
+
+    function closeProductDetailModal() {
+      document.getElementById('productDetailModal').classList.add('hidden');
+      currentModalProduct = null;
+    }
+
+    function addCurrentModalToCart() {
+      if (!currentModalProduct) return;
+      addToCart(currentModalProduct, currentSelectedSize, 1);
+      closeProductDetailModal();
+    }
+
+    // Cart Management
+    function quickAddToCart(id) {
+      const product = products.find(p => p.id === id);
+      if (product) {
+        const size = product.category.includes('أطفالي') ? '8 سنين' : 'L';
+        addToCart(product, size, 1);
+      }
+    }
+
+    function addToCart(product, size, qty) {
+      const existing = cart.find(item => item.id === product.id && item.size === size);
+      if (existing) {
+        existing.quantity += qty;
+      } else {
+        cart.push({
+          id: product.id,
+          name: product.name,
+          category: product.category,
+          price: product.price,
+          imageUrl: product.imageUrl,
+          size: size,
+          quantity: qty
+        });
+      }
+      syncLocalStorage();
+      updateCartUI();
+      showToast(`تمت إضافة "${product.name}" إلى السلة بنجاح! 🛍️`);
+    }
+
+    function updateCartQuantity(index, delta) {
+      if (cart[index]) {
+        cart[index].quantity += delta;
+        if (cart[index].quantity <= 0) {
+          cart.splice(index, 1);
+        }
+        syncLocalStorage();
+        updateCartUI();
+      }
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      syncLocalStorage();
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+      // Badge
+      const badge = document.getElementById('cartBadgeCount');
+      if (count > 0) {
+        badge.textContent = count;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+
+      document.getElementById('cartDrawerCount').textContent = count;
+      document.getElementById('cartSubtotal').textContent = `${subtotal} ج.م`;
+      document.getElementById('cartTotal').textContent = `${subtotal} ج.م`;
+      document.getElementById('checkoutOrderTotal').textContent = `${subtotal} ج.م`;
+
+      const list = document.getElementById('cartItemsList');
+      const emptyState = document.getElementById('cartEmptyState');
+      const footer = document.getElementById('cartFooter');
+
+      if (cart.length === 0) {
+        list.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        footer.classList.add('hidden');
+      } else {
+        emptyState.classList.add('hidden');
+        footer.classList.remove('hidden');
+
+        list.innerHTML = cart.map((item, idx) => `
+          <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex items-center justify-between gap-3">
+            <img src="${item.imageUrl}" alt="${item.name}" class="w-14 h-14 object-cover rounded-xl shrink-0">
+            <div class="flex-1 min-w-0">
+              <h5 class="text-xs font-bold text-slate-900 truncate">${item.name}</h5>
+              <div class="flex items-center gap-2 text-[11px] text-slate-500 mt-0.5">
+                <span>مقاس: ${item.size}</span>
+                <span>•</span>
+                <span class="font-bold text-brand-700">${item.price} ج.م</span>
+              </div>
+            </div>
+
+            <!-- Stepper -->
+            <div class="flex items-center gap-1.5 bg-white border border-slate-200 px-1.5 py-1 rounded-xl">
+              <button onclick="updateCartQuantity(${idx}, -1)" class="w-5 h-5 flex items-center justify-center text-slate-500 hover:text-brand-800 text-xs">
+                <i class="fa-solid fa-minus"></i>
+              </button>
+              <span class="text-xs font-black px-1">${item.quantity}</span>
+              <button onclick="updateCartQuantity(${idx}, 1)" class="w-5 h-5 flex items-center justify-center text-slate-500 hover:text-brand-800 text-xs">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
+
+            <button onclick="removeFromCart(${idx})" class="text-slate-400 hover:text-rose-600 text-sm p-1">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        `).join('');
+      }
+    }
+
+    function openCartModal() {
+      document.getElementById('cartModal').classList.remove('hidden');
+    }
+
+    function closeCartModal() {
+      document.getElementById('cartModal').classList.add('hidden');
+    }
+
+    // Checkout Modal
+    function openCheckoutModal() {
+      if (cart.length === 0) return;
+      closeCartModal();
+      document.getElementById('checkoutModal').classList.remove('hidden');
+    }
+
+    function closeCheckoutModal() {
+      document.getElementById('checkoutModal').classList.add('hidden');
+    }
+
+    function handlePlaceOrder(e) {
+      e.preventDefault();
+      if (cart.length === 0) return;
+
+      const name = document.getElementById('checkoutName').value.trim();
+      const phone = document.getElementById('checkoutPhone').value.trim();
+      const city = document.getElementById('checkoutCity').value;
+      const address = document.getElementById('checkoutAddress').value.trim();
+      const notes = document.getElementById('checkoutNotes').value.trim();
+
+      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const itemsSummary = cart.map(i => `${i.name} (مقاس ${i.size}) × ${i.quantity}`).join(' + ');
+      const orderCode = 'SHB-' + Math.floor(1000 + Math.random() * 9000);
+
+      const newOrder = {
+        id: Date.now(),
+        orderCode: orderCode,
+        customerName: name,
+        customerPhone: phone,
+        city: city,
+        address: address,
+        notes: notes,
+        itemsSummary: itemsSummary,
+        totalAmount: total,
+        paymentMethod: "الدفع عند الاستلام (COD)",
+        status: "قيد التنفيذ",
+        createdAt: Date.now()
+      };
+
+      orders.unshift(newOrder);
+      cart = [];
+      syncLocalStorage();
+      updateCartUI();
+      closeCheckoutModal();
+
+      // Show Success Dialog
+      document.getElementById('successOrderCode').textContent = '#' + orderCode;
+      document.getElementById('successCustomerName').textContent = name;
+      document.getElementById('successOrderTotal').textContent = `${total} ج.م`;
+      document.getElementById('orderSuccessModal').classList.remove('hidden');
+
+      renderAdminDashboard();
+    }
+
+    function closeOrderSuccessModal() {
+      document.getElementById('orderSuccessModal').classList.add('hidden');
+    }
+
+    // ==================== ADMIN DASHBOARD LOGIC ====================
+    function renderAdminDashboard() {
+      // Update KPIs
+      const totalOrders = orders.length;
+      const pendingOrders = orders.filter(o => o.status === 'قيد التنفيذ').length;
+      const totalRevenue = orders.filter(o => o.status !== 'ملغي').reduce((sum, o) => sum + o.totalAmount, 0);
+
+      document.getElementById('kpiTotalOrders').textContent = totalOrders;
+      document.getElementById('kpiPendingOrders').textContent = pendingOrders;
+      document.getElementById('kpiTotalRevenue').textContent = `${totalRevenue} ج.م`;
+      document.getElementById('kpiTotalProducts').textContent = products.length;
+      document.getElementById('adminOrdersBadge').textContent = totalOrders;
+
+      renderAdminOrders();
+      renderAdminProducts();
+    }
+
+    function switchAdminTab(tab) {
+      const tabOrders = document.getElementById('adminTabOrders');
+      const tabProducts = document.getElementById('adminTabProducts');
+      const tabOffers = document.getElementById('adminTabOffers');
+
+      const btnOrders = document.getElementById('adminTabBtnOrders');
+      const btnProducts = document.getElementById('adminTabBtnProducts');
+      const btnOffers = document.getElementById('adminTabBtnOffers');
+
+      [tabOrders, tabProducts, tabOffers].forEach(el => el.classList.add('hidden'));
+      [btnOrders, btnProducts, btnOffers].forEach(btn => {
+        btn.className = "pb-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2";
+      });
+
+      if (tab === 'orders') {
+        tabOrders.classList.remove('hidden');
+        btnOrders.className = "pb-3 border-b-2 border-brand-800 text-brand-900 flex items-center gap-2";
+        renderAdminOrders();
+      } else if (tab === 'products') {
+        tabProducts.classList.remove('hidden');
+        btnProducts.className = "pb-3 border-b-2 border-brand-800 text-brand-900 flex items-center gap-2";
+        renderAdminProducts();
+      } else {
+        tabOffers.classList.remove('hidden');
+        btnOffers.className = "pb-3 border-b-2 border-brand-800 text-brand-900 flex items-center gap-2";
+      }
+    }
+
+    // Admin Orders
+    function filterOrders(status) {
+      selectedOrderFilter = status;
+      document.querySelectorAll('.order-filter-pill').forEach(btn => {
+        if (btn.dataset.filter === status) {
+          btn.className = "order-filter-pill active bg-brand-800 text-white px-3 py-1.5 rounded-lg";
+        } else {
+          btn.className = "order-filter-pill bg-white text-slate-700 border border-slate-200 px-3 py-1.5 rounded-lg";
+        }
+      });
+      renderAdminOrders();
+    }
+
+    function renderAdminOrders() {
+      const container = document.getElementById('adminOrdersContainer');
+      const filtered = selectedOrderFilter === 'الكل' ? orders : orders.filter(o => o.status === selectedOrderFilter);
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white p-8 rounded-2xl border border-slate-200 text-center text-slate-400 space-y-2">
+            <i class="fa-solid fa-inbox text-3xl"></i>
+            <p class="text-xs font-bold text-slate-600">لا توجد طلبات في هذا القسم حالياً</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(o => {
+        const statusColors = {
+          'قيد التنفيذ': 'bg-amber-100 text-amber-800 border-amber-200',
+          'تم التأكيد': 'bg-blue-100 text-blue-800 border-blue-200',
+          'تم الشحن': 'bg-purple-100 text-purple-800 border-purple-200',
+          'تم التوصيل': 'bg-emerald-100 text-emerald-800 border-emerald-200',
+          'ملغي': 'bg-rose-100 text-rose-800 border-rose-200'
+        };
+
+        const dateStr = new Date(o.createdAt).toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' });
+
+        return `
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-black text-brand-900">#${o.orderCode}</span>
+                <span class="text-[11px] text-slate-400">${dateStr}</span>
+              </div>
+              <span class="text-[11px] font-bold px-2 py-0.5 rounded-full border ${statusColors[o.status] || 'bg-slate-100'}">
+                ${o.status}
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+              <div>
+                <p class="font-bold text-slate-900 flex items-center gap-1.5">
+                  <i class="fa-solid fa-user text-slate-400"></i> ${o.customerName}
+                </p>
+                <p class="text-slate-600 mt-1 flex items-center gap-1.5">
+                  <i class="fa-solid fa-location-dot text-slate-400"></i> ${o.city} - ${o.address}
+                </p>
+                ${o.notes ? `<p class="text-[11px] text-slate-500 mt-1">ملاحظات: ${o.notes}</p>` : ''}
+              </div>
+
+              <div class="flex flex-col md:items-end justify-between gap-2">
+                <a 
+                  href="tel:${o.customerPhone}" 
+                  class="inline-flex items-center gap-1 text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200 w-fit"
+                >
+                  <i class="fa-solid fa-phone"></i>
+                  <span>${o.customerPhone} (اتصال)</span>
+                </a>
+                <div class="flex items-baseline gap-1">
+                  <span class="text-xs text-slate-500 font-bold">المطلوب نقداً:</span>
+                  <span class="text-base font-black text-brand-900">${o.totalAmount} ج.م</span>
+                  <span class="text-[10px] text-emerald-600 font-bold">(COD)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Items -->
+            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-xs text-slate-700">
+              <span class="font-bold text-slate-900">المحتويات: </span>
+              <span>${o.itemsSummary}</span>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-100">
+              <div class="flex items-center gap-1.5">
+                <span class="text-[11px] font-bold text-slate-500">تحديث الحالة:</span>
+                <select 
+                  onchange="updateOrderStatus(${o.id}, this.value)" 
+                  class="border border-slate-300 rounded-lg px-2 py-1 text-xs font-bold bg-white focus:outline-none"
+                >
+                  <option value="قيد التنفيذ" ${o.status === 'قيد التنفيذ' ? 'selected' : ''}>قيد التنفيذ</option>
+                  <option value="تم التأكيد" ${o.status === 'تم التأكيد' ? 'selected' : ''}>تم التأكيد</option>
+                  <option value="تم الشحن" ${o.status === 'تم الشحن' ? 'selected' : ''}>تم الشحن 🚚</option>
+                  <option value="تم التوصيل" ${o.status === 'تم التوصيل' ? 'selected' : ''}>تم التوصيل ✅</option>
+                  <option value="ملغي" ${o.status === 'ملغي' ? 'selected' : ''}>ملغي ❌</option>
+                </select>
+              </div>
+
+              <button onclick="deleteOrder(${o.id})" class="text-slate-400 hover:text-rose-600 text-xs font-bold flex items-center gap-1">
+                <i class="fa-solid fa-trash-can"></i> حذف الطلب
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function updateOrderStatus(id, newStatus) {
+      const order = orders.find(o => o.id === id);
+      if (order) {
+        order.status = newStatus;
+        syncLocalStorage();
+        renderAdminDashboard();
+        showToast(`تم تحديث حالة الطلب إلى: ${newStatus}`);
+      }
+    }
+
+    function deleteOrder(id) {
+      if (confirm('هل أنت متأكد من حذف هذا الطلب نهائياً؟')) {
+        orders = orders.filter(o => o.id !== id);
+        syncLocalStorage();
+        renderAdminDashboard();
+        showToast('تم حذف الطلب بنجاح.');
+      }
+    }
+
+    // Admin Products CRUD
+    function renderAdminProducts() {
+      const container = document.getElementById('adminProductsContainer');
+      container.innerHTML = products.map(p => `
+        <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
+          <img src="${p.imageUrl}" alt="${p.name}" class="w-16 h-16 object-cover rounded-xl shrink-0">
+          <div class="flex-1 min-w-0">
+            <h5 class="text-xs font-bold text-slate-900 truncate">${p.name}</h5>
+            <div class="flex items-center gap-2 text-[11px] text-slate-500 mt-0.5">
+              <span class="bg-slate-100 px-1.5 py-0.5 rounded font-bold">${p.category}</span>
+              <span class="font-bold text-brand-700">${p.price} ج.م</span>
+            </div>
+            <span class="text-[10px] font-bold ${p.inStock ? 'text-emerald-600' : 'text-rose-600'}">
+              ${p.inStock ? 'متوفر بالمخزن' : 'غير متوفر'}
+            </span>
+          </div>
+          <div class="flex flex-col gap-1">
+            <button onclick="openEditProductModal(${p.id})" class="text-slate-500 hover:text-brand-800 p-1.5 rounded-lg hover:bg-slate-100 text-xs" title="تعديل">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button onclick="deleteProduct(${p.id})" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 text-xs" title="حذف">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openAddProductModal() {
+      document.getElementById('editProductId').value = '';
+      document.getElementById('productEditModalTitle').textContent = 'إضافة منتج جديد';
+      document.getElementById('editProductName').value = '';
+      document.getElementById('editProductCategory').value = 'رجالي';
+      document.getElementById('editProductBadge').value = '';
+      document.getElementById('editProductPrice').value = '';
+      document.getElementById('editProductOrigPrice').value = '';
+      document.getElementById('editProductImage').value = '';
+      document.getElementById('editProductDesc').value = '';
+      document.getElementById('editProductInStock').checked = true;
+
+      document.getElementById('productEditModal').classList.remove('hidden');
+    }
+
+    function openEditProductModal(id) {
+      const p = products.find(item => item.id === id);
+      if (!p) return;
+
+      document.getElementById('editProductId').value = p.id;
+      document.getElementById('productEditModalTitle').textContent = 'تعديل بيانات المنتج';
+      document.getElementById('editProductName').value = p.name;
+      document.getElementById('editProductCategory').value = p.category;
+      document.getElementById('editProductBadge').value = p.badge || '';
+      document.getElementById('editProductPrice').value = p.price;
+      document.getElementById('editProductOrigPrice').value = p.originalPrice || '';
+      document.getElementById('editProductImage').value = p.imageUrl;
+      document.getElementById('editProductDesc').value = p.description;
+      document.getElementById('editProductInStock').checked = p.inStock;
+
+      document.getElementById('productEditModal').classList.remove('hidden');
+    }
+
+    function closeProductEditModal() {
+      document.getElementById('productEditModal').classList.add('hidden');
+    }
+
+    function setPresetImg(url) {
+      document.getElementById('editProductImage').value = url;
+    }
+
+    function handleSaveProduct(e) {
+      e.preventDefault();
+      const idStr = document.getElementById('editProductId').value;
+      const name = document.getElementById('editProductName').value.trim();
+      const category = document.getElementById('editProductCategory').value;
+      const badge = document.getElementById('editProductBadge').value.trim();
+      const price = parseFloat(document.getElementById('editProductPrice').value);
+      const origPriceVal = document.getElementById('editProductOrigPrice').value;
+      const origPrice = origPriceVal ? parseFloat(origPriceVal) : null;
+      const imageUrl = document.getElementById('editProductImage').value.trim();
+      const description = document.getElementById('editProductDesc').value.trim();
+      const inStock = document.getElementById('editProductInStock').checked;
+
+      if (idStr) {
+        // Edit
+        const id = parseInt(idStr);
+        const idx = products.findIndex(p => p.id === id);
+        if (idx !== -1) {
+          products[idx] = { ...products[idx], name, category, badge, price, originalPrice: origPrice, imageUrl, description, inStock };
+        }
+        showToast('تم حفظ تعديلات المنتج بنجاح! ✅');
+      } else {
+        // Add
+        const newProduct = {
+          id: Date.now(),
+          name, category, badge, price, originalPrice: origPrice, imageUrl, description, inStock, rating: 4.8
+        };
+        products.unshift(newProduct);
+        showToast('تمت إضافة المنتج الجديد للمتجر! 🎉');
+      }
+
+      syncLocalStorage();
+      closeProductEditModal();
+      renderProducts();
+      renderAdminDashboard();
+    }
+
+    function deleteProduct(id) {
+      if (confirm('هل أنت متأكد من حذف هذا المنتج؟')) {
+        products = products.filter(p => p.id !== id);
+        syncLocalStorage();
+        renderProducts();
+        renderAdminDashboard();
+        showToast('تم حذف المنتج بنجاح.');
+      }
+    }
+
+    // Admin Offers Form
+    function applyOfferPreset(tag, head, sub) {
+      document.getElementById('offerTagInput').value = tag;
+      document.getElementById('offerHeadlineInput').value = head;
+      document.getElementById('offerSubtitleInput').value = sub;
+    }
+
+    function handleSaveOffer(e) {
+      e.preventDefault();
+      offer.discountTag = document.getElementById('offerTagInput').value.trim();
+      offer.headline = document.getElementById('offerHeadlineInput').value.trim();
+      offer.subtitle = document.getElementById('offerSubtitleInput').value.trim();
+      offer.isActive = document.getElementById('offerActiveCheckbox').checked;
+
+      syncLocalStorage();
+      renderOfferBanner();
+      showToast('تم تحديث العروض والبنر الإعلاني بنجاح! 🚀');
+    }
+
+    function resetToSampleData() {
+      if (confirm('هل تريد استعادة المنتجات والعروض الافتراضية لمحلات شعبان؟')) {
+        products = [...DEFAULT_PRODUCTS];
+        offer = { ...DEFAULT_OFFER };
+        syncLocalStorage();
+        renderOfferBanner();
+        renderProducts();
+        renderAdminDashboard();
+        showToast('تمت استعادة البيانات الافتراضية بنجاح!');
+      }
+    }
+
+    // Toast Helper
+    function showToast(message) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'bg-slate-900 text-white text-xs font-bold px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 transform transition-all duration-300 translate-y-2 opacity-0';
+      toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> <span>${message}</span>`;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      }, 50);
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-2', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+  </script>
+</body>
+</html>
